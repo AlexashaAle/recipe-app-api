@@ -1,5 +1,4 @@
-verson: "3"
-
+version: "3"
 services:
   app:
     build:
@@ -7,9 +6,10 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app: /app
+      - "./app:/app"
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
+
       
       
       
