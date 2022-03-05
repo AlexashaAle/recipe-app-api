@@ -1,0 +1,29 @@
+version: 2.1
+
+# Define the jobs we want to run for this project
+jobs:
+  build:
+    docker:
+      - image: cimg/python:3.7-alpine
+        auth:
+          username: mydockerhub-alexasha992
+          password: $3379219Kate)) # context / project UI env-var reference
+    steps:
+      - checkout
+      - run: pip install docker-compose
+  test:
+    docker:
+      - image: cimg/cimg/python:3.7-alpine
+        auth:
+          username: mydockerhub-alexasha992
+          password: $3379219Kate)) # context / project UI env-var reference
+    steps:
+      - checkout
+      - run: sudo docker-compose run app sh -c "python manage.py test && flake8"
+
+# Orchestrate our job run sequences
+workflows:
+  build_and_test:
+    jobs:
+      - build
+      - test
