@@ -4,20 +4,14 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: cimg/python:3.7-alpine
-        auth:
-          username: mydockerhub-alexasha992
-          password: $3379219Kate)) # context / project UI env-var reference
+      - image: python:3.7-alpine
+        
     steps:
       - checkout
       - run: pip install docker-compose
   test:
     docker:
-      - image: cimg/cimg/python:3.7-alpine
-        auth:
-          username: mydockerhub-alexasha992
-          password: $3379219Kate)) # context / project UI env-var reference
-    steps:
+      - image: python:3.7-alpine
       - checkout
       - run: sudo docker-compose run app sh -c "python manage.py test && flake8"
 
