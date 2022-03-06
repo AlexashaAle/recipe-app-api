@@ -1,23 +1,23 @@
 version: 2.1
-
-# Define the jobs we want to run for this project
-jobs:
-  build:
+executors:
+  my-custom-executor:
     docker:
       - image: python:3.7-alpine
-        
+        auth:
+          # ensure you have first added these secrets
+          # visit app.circleci.com/settings/project/github/AlexashaAle/recipe-app-api/environment-variables
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASSWORD
+jobs:
+  recipe_app_api:
+
+    executor: my-custom-executor
     steps:
       - checkout
-      - run: pip install docker-compose
-  test:
-    docker:
-      - image: python:3.7-alpine
-      - checkout
-      - run: sudo docker-compose run app sh -c "python manage.py test && flake8"
+      - run: |
+           docker-compose run   app sh -c "python manage.py test"
 
-# Orchestrate our job run sequences
 workflows:
-  build_and_test:
+  my-custom-workflow:
     jobs:
-      - build
-      - test
+      - recipe_app_api
