@@ -3,15 +3,11 @@ executors:
   my-custom-executor:
     docker:
       - image: python:3.7-alpine
-<<<<<<< HEAD
         auth:
           # ensure you have first added these secrets
           # visit app.circleci.com/settings/project/github/AlexashaAle/recipe-app-api/environment-variables
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASSWORD
-=======
-        
->>>>>>> e65fd66a7388c08ac1b1934fab53524d58e1d597
 jobs:
   recipe_app_api:
 
@@ -19,11 +15,7 @@ jobs:
     steps:
       - checkout
       - run: |
-<<<<<<< HEAD
            docker-compose run   app sh -c "python manage.py test"
-=======
-           docker-compose run app sh -c "python manage.py test && flake8"
->>>>>>> e65fd66a7388c08ac1b1934fab53524d58e1d597
 
 workflows:
   my-custom-workflow:
