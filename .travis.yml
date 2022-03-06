@@ -1,5 +1,5 @@
 language: python
-python: sudo docker-compose run   app sh -c "python manage.py test"to docker
+python: docker-compose run   app sh -c "python manage.py test"to docker
   - "3.7"
 services:
   - docker
