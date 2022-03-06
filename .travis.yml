@@ -4,10 +4,7 @@ python: docker-compose run   app sh -c "python manage.py test"to docker
 services:
   - docker
 
-before_install:
-  - echo $DOCKER_PASSWORD | docker login --alexasha992 $DOCKER_USERNAME -- 3379219Kate)) -stdin
  
-
 before_script: pip install docker-compose
 
 script:
