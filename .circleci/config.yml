@@ -8,6 +8,9 @@ executors:
           # visit app.circleci.com/settings/project/github/AlexashaAle/recipe-app-api/environment-variables
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASSWORD
+    steps:
+      - docker/install-docker-compose
+          
 jobs:
   recipe_app_api:
 
