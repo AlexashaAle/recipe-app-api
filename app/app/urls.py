@@ -14,8 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+# include  дает переводить юрл в строки
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    #при любом реквесте с api/user система переведет на юрлы в папке юзер
+    path('api/user', include('user.urls'))
 ]
