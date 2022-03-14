@@ -1,7 +1,12 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
+# при выводе любых сообщений на экран на любом языка
+from django.utils.translation import ugettext_lazy as _
+
 from rest_framework import serializers
 
 # сериализатор переводить данные из джонсон и обратно
+
+
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for the users objects"""
 
@@ -14,6 +19,39 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Create a new user with encrypted password and return it"""
-        # validated_data инф полученная после http реквеста и создающая из этого юзера
+        # validated_data инф полученная после http реквеста и создающая юзера
         return get_user_model().objects.create_user(**validated_data)
 
+
+class AuthTokenSerializer(serializers.Serializer):
+    """Seriakizer for the user authentication object"""
+    email = serializers.CharField()
+    password = serializers.CharField(
+        style={'input_type': "password"},
+        #  по умолчани джанго удаляет пробел, тут мы этого избегаем
+        trim_whitespace=False
+    )
+
+    def validate(self, attrs):
+        """Validete and authenticate the user"""
+        # validate - подтвердить
+        # attrs -  это поля заданные в сериализаторе выше
+
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        user = authenticate(
+            # отправляет в окружение и направляет запрос в сериализатор
+            request=self.context.get('request'),
+            username=email,
+            password=password
+        )
+        #  если не вышло аторизоваться
+        if not user:
+            msg = _('Unable to authenticate with provide credentials')
+            # ловит ошибку валидации и показывает сообщение
+            raise serializers.ValidationError(msg, code='authentication')
+        # сохраняем юзера подтвержденным
+        attrs['user'] = user
+        # возвращаем данные
+        return attrs

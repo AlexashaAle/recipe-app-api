@@ -9,6 +9,7 @@ class CommandsTestCase(TestCase):
 
     def test_wait_for_db_ready(self):
         """Test waiting for db when db is avalible"""
+
         with patch('django.db.utils.ConnectionHandler.__getitem__') as gi:
             # мок обьект симуляция поведения реального обьекта
             # в данной функии если функция сработала в джанго возвращает правду
