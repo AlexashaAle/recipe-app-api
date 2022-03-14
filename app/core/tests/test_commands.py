@@ -5,7 +5,7 @@ from django.db.utils import OperationalError
 from django.test import TestCase
 
 
-class CommandTest(TestCase):
+class CommandsTestCase(TestCase):
 
     def test_wait_for_db_ready(self):
         """Test waiting for db when db is avalible"""
@@ -18,7 +18,7 @@ class CommandTest(TestCase):
             self.assertEqual(gi.call_count, 1)
     # функция мок обьектов Симулирует ожидание для быстроей проверки теста
 
-    @patch('time.sleep', return_value=True)
+    @patch('time.sleep', return_value=None)
     # требует внесения в аргументы, или выдаст ошибку
     def test_wait_for_db(self, ts):
         """test waiting dor db """
