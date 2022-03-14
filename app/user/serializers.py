@@ -10,10 +10,10 @@ class UserSerializer(serializers.ModelSerializer):
         # определяем поля для конвертации при реквесте
         fields = ('email', 'password', 'name')
         # специальные условия для пароля
-        extra_kwargs = {'password': {'write_only': True, 'min_lenght':5}}
+        extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
 
     def create(self, validated_data):
         """Create a new user with encrypted password and return it"""
         # validated_data инф полученная после http реквеста и создающая из этого юзера
-        return get_user_model().objcts.create_user(**validated_data)
+        return get_user_model().objects.create_user(**validated_data)
 
