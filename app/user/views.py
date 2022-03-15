@@ -16,6 +16,7 @@ class CreateTokenView(ObtainAuthToken):
     #  визуализация базы данных в браузере, что бы логинится
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
 
+
 class ManageUserView(generics.RetrieveUpdateAPIView):
     """Manage the authenticated user"""
     serializer_class = UserSerializer
@@ -24,4 +25,3 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
-
