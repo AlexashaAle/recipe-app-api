@@ -106,7 +106,7 @@ class PublicUserApiTests(TestCase):
         self.assertNotIn('token', res.data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def crate_token_missing_firld(self):
+    def test_create_token_missing_firld(self):
         """Test that email and password is required"""
 
         res = self.client.post(TOKEN_URL, {'email': 'one', 'password': ''})
@@ -137,26 +137,26 @@ class PrivateUserApiTests(TestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_retrieve_profile_success(self):
-        """Test retrieving profile for logget in used"""
+        """Test retrieving profile for logged in user"""
         #  тест при авторизации профиль извлечен верно
         res = self.client.get(ME_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.date, {
+        self.assertEqual(res.data, {
             'name': self.user.name,
-            'email': self.user.email
+            'email': self.user.email,
         })
 
     def test_post_me_not_allowed(self):
-        """Test that POST is not allowed on me url"""
+        """Test that POST is not allowed on the me url"""
         res = self.client.post(ME_URL, {})
 
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_update_user_profile(self):
-        """Test update the user profile"""
+        """TTest updating the user profile for authenticated user"""
 
-        payload = {'name':'new_name', 'password':'newpass'}
+        payload = {'name': 'new_name', 'password': 'newpass1234'}
         # отправляем запрос через патч для обновления инфы
         res = self.client.patch(ME_URL, payload)
         # обновляем инфу в бд
