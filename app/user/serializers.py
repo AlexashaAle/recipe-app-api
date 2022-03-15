@@ -60,9 +60,9 @@ class AuthTokenSerializer(serializers.Serializer):
         )
         #  если не вышло аторизоваться
         if not user:
-            msg = _('Unable to authenticate with provide credentials')
+            msg = _('Unable to authenticate with provided credentials')
             # ловит ошибку валидации и показывает сообщение
-            raise serializers.ValidationError(msg, code='authentication')
+            raise serializers.ValidationError(msg, code='authorization')
         # сохраняем юзера подтвержденным
         attrs['user'] = user
         # возвращаем данные

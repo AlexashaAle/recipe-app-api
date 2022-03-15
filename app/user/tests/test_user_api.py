@@ -136,7 +136,7 @@ class PrivateUserApiTests(TestCase):
         # авторизовывает клиента в апи
         self.client.force_authenticate(user=self.user)
 
-    def test_retrive_profile_success(self):
+    def test_retrieve_profile_success(self):
         """Test retrieving profile for logget in used"""
         #  тест при авторизации профиль извлечен верно
         res = self.client.get(ME_URL)
@@ -148,7 +148,7 @@ class PrivateUserApiTests(TestCase):
         })
 
     def test_post_me_not_allowed(self):
-        """Test that POST is not allowed om me url"""
+        """Test that POST is not allowed on me url"""
         res = self.client.post(ME_URL, {})
 
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -157,7 +157,6 @@ class PrivateUserApiTests(TestCase):
         """Test update the user profile"""
 
         payload = {'name':'new_name', 'password':'newpass'}
-
         # отправляем запрос через патч для обновления инфы
         res = self.client.patch(ME_URL, payload)
         # обновляем инфу в бд
