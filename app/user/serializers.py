@@ -22,6 +22,18 @@ class UserSerializer(serializers.ModelSerializer):
         # validated_data инф полученная после http реквеста и создающая юзера
         return get_user_model().objects.create_user(**validated_data)
 
+    def update(self, instance, validated_data):
+        """Update a user , setting the password correctly and return it"""
+        # instance- премер
+        # вытаскиваем пороль, из подтвержденых данных
+        password = validated_data.pop('password', None)
+        user = super().update(instance, validated_data)
+
+        # если юзер изменил пароль меняем его
+        if password:
+            user.set_password(password)
+            user.save()
+        return user
 
 class AuthTokenSerializer(serializers.Serializer):
     """Seriakizer for the user authentication object"""
