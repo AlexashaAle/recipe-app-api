@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # при любом реквесте с api/user система переведет на юрлы в папке юзер
     path('api/user/', include('user.urls')),
+    path('api/recipe', include('recipe.urls'))
 ]
