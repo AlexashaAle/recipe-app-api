@@ -14,4 +14,4 @@ app_name = 'recipe'
 
 # задаем шаблоны юрл
 
-urlpatterns = [path('', include(router.urls))]
+urlpatterns = [path('/', include(router.urls))]
