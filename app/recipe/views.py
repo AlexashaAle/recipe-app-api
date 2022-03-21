@@ -7,48 +7,35 @@ from core.models import Tag, Ingredient
 from recipe import serializers
 
 
-class TagViewSet(viewsets.GenericViewSet,
-                 mixins.ListModelMixin,
-                 mixins.CreateModelMixin):
-    """Manage tags in the database"""
+class BaseRecipeAttrViewSet(viewsets.GenericViewSet,
+                            mixins.ListModelMixin,
+                            mixins.CreateModelMixin):
+    """Base view set for user owned recipe attributes"""
+    # Создание базового класса обьеденяющего одинаковые елементы для тего и инг
     # авторизуемся с помощью токена
     authentication_classes = (TokenAuthentication,)
+    # задаем разрешение только для авторизованных пользователей
     permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        """Return objects for the current authenticatesd user only"""
+        return self.queryset.filter(user=self.request.user).order_by("-name")
+
+    def perform_create(self, serializer):
+        """Create new object"""
+        serializer.save(user=self.request.user)
+
+
+class TagViewSet(BaseRecipeAttrViewSet):
+    """Manage tags in the database"""
     # определяем набор запросов
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
 
-    def get_queryset(self):
-        """Return objects for the current authenticatesd user only"""
-        # задаем фильтр результат выводился только авторизованным пользователям
-        return self.queryset.filter(user=self.request.user).order_by('-name')
 
-        # функция подключается с сериалайзеру и сохраняет обьекты
-    def perform_create(self, serializer):
-        """Create a new tag"""
-        # сохранить обьект
-        serializer.save(user=self.request.user)
-
-
-class IngredientViewSet(viewsets.GenericViewSet,
-                        mixins.ListModelMixin,
-                        mixins.CreateModelMixin):
+class IngredientViewSet(BaseRecipeAttrViewSet):
     """Manage ingrideents in data base"""
 
-    # задаем метод авторизации
-    authentication_classes = (TokenAuthentication,)
-    # задаем разрешение только для авторизованных пользователей
-    permission_classes = (IsAuthenticated,)
     # определяем запросы
     queryset = Ingredient.objects.all()
     serializer_class = serializers.ingredientSerializer
-
-    # задаем фильтр для выдачи результата только аторизованным пользователям
-    def get_queryset(self):
-        """Return objects for current user"""
-        return self.queryset.filter(user=self.request.user).order_by('-name')
-
-    def perform_create(self, serializer):
-        """Create a new Ingredient"""
-
-        serializer.save(user=self.request.user)
