@@ -45,10 +45,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """Manage recipe in data base"""
 
     queryset = Recipe.objects.all()
-    serializer_class = serializers.RecipeSerializer()
+    serializer_class = serializers.RecipeSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         """retrive query set for autetheficated user"""
-        return self.queryset.filter(user=self.user)
+        return self.queryset.filter(user=self.request.user)
