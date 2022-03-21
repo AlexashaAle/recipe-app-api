@@ -65,3 +65,26 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Recipe(models.Model):
+    """Recipe to cook"""
+    # задаем юзера
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    # добаляем поле для названия
+    title = models.CharField(max_length=255)
+    # поле для времени приготавления
+    time_minutes = models.IntegerField()
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    # задаем ссылку на рецепт если она есть, или возвращает пустую строку
+    link = models.CharField(max_length=255, blank=True)
+    # задаем ссылку на ингридеенты позволяющюу подгрущать множество полей
+    ingredients = models.ManyToManyField('Ingredient')
+    # задаем ссылку на ингридеенты позволяющюу подгрущать множество тегов
+    tags = models.ManyToManyField('Tag')
+
+    def __str__(self):
+        return self.title
