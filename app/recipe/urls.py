@@ -8,6 +8,7 @@ from recipe import views
 router = DefaultRouter()
 # регистрируем наши ссылки и соотносим их с окружением
 router.register('tags', views.TagViewSet)
+router.register('ingredients', views.IngredientViewSet)
 
 app_name = 'recipe'
 
