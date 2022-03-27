@@ -179,3 +179,60 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(ingredients.count(), 2)
         self.assertIn(ingredient1, ingredients)
         self.assertIn(ingredient2, ingredients)
+
+    def test_partial_update_recipe(self):
+        """Test updating te recipe with patch"""
+        # patch - обновляет только поля заданные в запросе
+        # создаем рецепт
+        recipe = sample_recipe(user=self.user)
+        # добавляем тег к рецепту
+        recipe.tags.add(sample_tag(user=self.user))
+        # содаем новый тег для проверки замены тега
+        new_tag = sample_tag(user=self.user, name='Curry')
+        # задаем поля для обновления рецепта
+        payload = {'title': 'Chiken tikka', 'tags': new_tag.id}
+        # создаем ссылку включающую айди рецепта
+        url = detail_url(recipe.id)
+        # отправляем патч запрос
+        # здесь мы не сохраняем ответ,  выполняем проверку через дб
+        self.client.patch(url, payload)
+        # обновляем информацию в рецепте через базу данных
+        # где-бы вносились изменения они не обнавлcяться  до вызова функциии
+        recipe.refresh_from_db()
+        # проверяем соответвие рецепта из дб и загружанных полей
+        self.assertEqual(recipe.title, payload['title'])
+        # выгружаем все теги
+        tags = recipe.tags.all()
+        # проверяем количество тегов
+        # должно быть равным одному, тек обновился а не прибавился
+        self.assertEqual(len(tags), 1)
+        # проверяем что тег замене на новый тег
+        self.assertEqual(new_tag, tags)
+
+    def test_full_update_recipe(self):
+        """Update the recipe with put"""
+        # пут заменяет весь обьект целиком, без сохранения предыдущих полей
+        # создаем пробный рецепт
+        recipe = sample_recipe(user=self.user)
+        # добавляем в него пробный тег
+        recipe.tags.add(sample_tag(user=self.user))
+        # добаляем Поля
+        payload = {
+            'title': 'Spagetti carbonara',
+            'time_minutes': 25,
+            'price': 5.00
+        }
+        # создаем юрл с дбавлением айди рецепта
+        url = detail_url(recipe.id)
+        # отправляем запрос
+        self.client.put(url, payload)
+
+        recipe.refresh_from_db()
+        # проверяем соответствие полей в бд и в запросе
+        self.assertEqual(recipe.title, payload['title'])
+        self.assertEqual(recipe.time_minutes, payload['time_minutes'])
+        self.assertEqual(recipe.price, payload['price'])
+        #загружаем теги рецепта из базы данных
+        tags = recipe.tags.all()
+        # в рецепте обнавленном черз пут тегов быть не должно
+        self.assertEqual(len(tags), 0)
