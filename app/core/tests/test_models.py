@@ -81,7 +81,7 @@ class ModelTests(TestCase):
     @patch("uuid.uuid4")
     # создаем уникальный айди версия 4
     def test_recipe_file_name_uuid(self, mock_uuid):
-        """Test that image save in the correct location"""
+        """Test that image saved in the correct location"""
         # Симулируем изображение и сохраняем его
         # прверяем что возвращенная строка соответствует заданном пути
         uuid = 'test-uuid'

@@ -11,9 +11,9 @@ def recipe_image_file_path(instace, filename):
     # вытаскиваем из имени файла рgthtасширение путем создания списка
     ext = filename.split(".")[-1]
     # создаем новое имя файла
-    filename = f"{uuid.uuid4}.{ext}"
+    filename = f"{uuid.uuid4()}.{ext}"
     # возвращаем путь, join  позволяет соеденять разные переменные в пути
-    return os.path.join('uploads/recipe', filename)
+    return os.path.join('uploads/recipe/', filename)
 
 
 class UserManager(BaseUserManager):
