@@ -1,7 +1,19 @@
+import uuid
+import os
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
                                         PermissionsMixin
 from django.conf import settings
+
+
+def recipe_image_file_path(instace, filename):
+    """Generete file path for new recipe image"""
+    # вытаскиваем из имени файла рgthtасширение путем создания списка
+    ext = filename.split(".")[-1]
+    # создаем новое имя файла
+    filename = f"{uuid.uuid4}.{ext}"
+    # возвращаем путь, join  позволяет соеденять разные переменные в пути
+    return os.path.join('uploads/recipe', filename)
 
 
 class UserManager(BaseUserManager):
@@ -85,6 +97,8 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField('Ingredient')
     # задаем ссылку на ингридеенты позволяющюу подгрущать множество тегов
     tags = models.ManyToManyField('Tag')
+    # добавляем поле изображения котрое может быть пустым
+    image = models.ImageField(null=True, upload_to=recipe_image_file_path)
 
     def __str__(self):
         return self.title

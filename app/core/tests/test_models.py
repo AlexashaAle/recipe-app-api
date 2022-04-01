@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from core import models
@@ -75,3 +77,20 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(recipe), recipe.title)
+
+    @patch("uuid.uuid4")
+    # создаем уникальный айди версия 4
+    def test_recipe_file_name_uuid(self, mock_uuid):
+        """Test that image save in the correct location"""
+        # Симулируем изображение и сохраняем его
+        # прверяем что возвращенная строка соответствует заданном пути
+        uuid = 'test-uuid'
+        #  каждый раз при вызове uuid переписыает функцию и возвращает тестовый
+        mock_uuid.return_value = uuid
+        # подгружаем из моделей пока не созданную пукцию возвращающую путь
+        file_path = models.recipe_image_file_path(None, 'myimage.jpg')
+
+        # задаем ожидаемы путь
+        exp_path = f"uploads/recipe/{uuid}.jpg"
+        # проверяем соответствие
+        self.assertEqual(file_path, exp_path)
