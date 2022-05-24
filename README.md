@@ -1,2 +1,2 @@
 # recipe-app-api
-Апи для складирования рецептов, just to write someting, and again
+API for collecting the recipe
