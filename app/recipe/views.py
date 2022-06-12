@@ -70,6 +70,4 @@ class RecipeViewSet(viewsets.ModelViewSet):
     # detail -значит действие произвоодится над уже существующей ячейкой recipe
     # detail действие осуществлюейтся над юрл с существующим айди
     # Url_pach-путь для добавления файла
-    @action(methods=['POST'], detail=True, url_path="upload-image")
-    # pk-primary key  которые будут в юрл
-    def upload_image(self, request, pk=None)
+   
