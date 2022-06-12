@@ -1,4 +1,12 @@
+# функция идущая с питоном позволяет создавать временные файлы
+import tempfile
+# позволяет проверить если файл сужествует в системе
+import os
+# добавляем пилоу позволяет создать тестовое изображение
+from PIL import Image
+
 from django.contrib.auth import get_user_model
+
 from django.test import TestCase
 from django.urls import reverse
 
@@ -11,6 +19,11 @@ from recipe.serializers import RecipeSerializer, RecipeDetailSerializer
 
 # первый параметр это приложение, второй идентификатор юрл в приложении
 RECIPES_URL = reverse('recipe:recipe-list')
+
+
+def image_upload_url(recipe_id):
+    """Return URL for recipe image upload"""
+    return reverse('recipe:recipe-upload-image', args=[recipe_id])
 
 # создаем допфунк для добавления айди к юрл
 
@@ -236,3 +249,55 @@ class PrivateRecipeApiTests(TestCase):
         tags = recipe.tags.all()
         # в рецепте обнавленном черз пут тегов быть не должно
         self.assertEqual(len(tags), 0)
+
+
+class RecipeImageUploadTests(TestCase):
+
+    def setUp(self):
+        # создаем клиен дляотправки запросов
+        self.client = APIClient()
+        # создаем юзера
+        self.user = get_user_model().objects.create_user(
+            "user@test.com",
+            'testpass'
+        )
+        # авторизуемся в системе
+        self.client.force_authenticate(user=self.user)
+        # создаем тестовый рецепт
+        self.recipe = sample_recipe(user=self.user)
+
+    def tearDown(self):
+        # функция выполняемая после основого теста
+        # удаляем рецепт
+        self.recipe.image.delete()
+
+    def test_uploading_image_to_recipe(self):
+        """test uploading image to recipe"""
+        url = image_upload_url(self.recipe.id)
+        # создаем временный файл с именим и расширением jpg
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as ntf:
+            # создаем изображение черногоквардрата 10 на 10 пикслей
+            img = Image.new('RGB', (10, 10))
+            # сохраняем его во временном файле, указываем формат
+            img.save(ntf, format='JPEG')
+            # перемещает "курсор" в начало загружаемых фйалов
+            ntf.seek(0)
+            # multpart опция для загрузки данный х формате отличном от json
+            res = self.client.post(url, {'image': ntf}, format='multipart')
+        # обновляем данные
+        self.recipe.refresh_from_db()
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        # проверяем наличее изображения в бд
+        self.assertIn("image", res.data)
+        # проверяем наличее пути в файловой системе
+        self.assertTrue(os.path.exists(self.recipe.image.path))
+
+    def test_upload_image_bad_request(self):
+        """Test uploading an invalid image"""
+        url = image_upload_url(self.recipe.id)
+        # отправляем запрс со строкой вместо файла
+        res = self.client.post(
+            url, {'image': "something alse"}, format='multipart')
+
+        # проверяем что загрузить не удалось
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

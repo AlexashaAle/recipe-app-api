@@ -1,4 +1,6 @@
-from rest_framework import viewsets, mixins
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -63,3 +65,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Create a new recipe"""
         serializer.save(user=self.request.user)
+
+    # позволяет создавать изменения в действиях по умолчанию
+    # detail -значит действие произвоодится над уже существующей ячейкой recipe
+    # detail действие осуществлюейтся над юрл с существующим айди
+    # Url_pach-путь для добавления файла
+    @action(methods=['POST'], detail=True, url_path="upload-image")
+    # pk-primary key  которые будут в юрл
+    def upload_image(self, request, pk=None)
