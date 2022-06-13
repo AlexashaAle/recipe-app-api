@@ -1,10 +1,3 @@
-# функция идущая с питоном позволяет создавать временные файлы
-import tempfile
-# позволяет проверить если файл сужествует в системе
-import os
-# добавляем пилоу позволяет создать тестовое изображение
-
-
 from django.contrib.auth import get_user_model
 
 from django.test import TestCase
@@ -249,5 +242,3 @@ class PrivateRecipeApiTests(TestCase):
         tags = recipe.tags.all()
         # в рецепте обнавленном черз пут тегов быть не должно
         self.assertEqual(len(tags), 0)
-
-

@@ -46,4 +46,3 @@ class RecipeDetailSerializer(RecipeSerializer):
     # можно нестить сериализаторы друг в друга, добавляем ингриденты к деталям
     ingredients = IngredientSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
-
