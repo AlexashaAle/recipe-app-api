@@ -19,17 +19,6 @@ jobs:
 
       - name: connect to db
         run: docker-compose run --rm app sh -c "python manage.py wait_for_db"
-
-
-
-  testing:
-    name: test and lint
-    runs-on: ubuntu-20.04
-    needs: [connections]
-    steps:
-
-      - name: CheckOut
-        uses: actions/checkout@v2  
       
       - name: test
         run: docker-compose run --rm app sh  -c "python manage.py test"
@@ -38,4 +27,6 @@ jobs:
       - name: lint
         run: docker-compose run --rm app sh -c 'flake8'
         
+
+
 
