@@ -17,8 +17,14 @@ jobs:
       - name: CheckOut
         uses: actions/checkout@v2 
 
+      - name: connect to db
+        run: docker-compose run --rm app sh -c "python manage.py wait_for_db"
+
       - name: test
-        run: docker-compose run --rm app sh -c "python manage.py wait_for_db && python manage.py test"
+        run: docker-compose run --rm app sh  -c "python manage.py test""
+        depends_on: connect to db
+
       - name: lint
         run: docker-compose run --rm app sh -c 'flake8'
+        depends_on: connect to db
 
