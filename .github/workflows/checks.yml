@@ -4,9 +4,7 @@ name: Checks
 on: [push]
 
 jobs:
-  test-lint:
-    name: test and lint
-    runs-on: ubuntu-20.04
+  connections:
     steps:
       - name: Login to docker hub
         uses: docker/login-action@v1
@@ -20,6 +18,14 @@ jobs:
       - name: connect to db
         run: docker-compose run --rm app sh -c "python manage.py wait_for_db"
 
+
+
+  testing:
+    name: test and lint
+    runs-on: ubuntu-20.04
+    needs: [connections]
+    steps:
+      
       - name: test
         run: docker-compose run --rm app sh  -c "python manage.py test""
         depends_on: connect to db
