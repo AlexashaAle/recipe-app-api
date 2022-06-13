@@ -27,6 +27,9 @@ jobs:
     runs-on: ubuntu-20.04
     needs: [connections]
     steps:
+
+      - name: CheckOut
+        uses: actions/checkout@v2  
       
       - name: test
         run: docker-compose run --rm app sh  -c "python manage.py test"
